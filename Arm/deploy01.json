@@ -49,15 +49,15 @@
     },
     "AppId": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "GET-SERVICEPRINCIPAL-APPLICATION-ID"
     },
     "AppSecret": {
       "type": "securestring",
-      "defaultValue": ""
+      "defaultValue": "GET-SERVICEPRINCIPAL-SECRET"
     },
     "azuserobjectid": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "GET-AZUSER-OBJECTID"
     }
   },
   "variables": {
