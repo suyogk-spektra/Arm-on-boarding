@@ -1,5 +1,5 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "adminUsername": {
@@ -43,16 +43,21 @@
       "type": "int",
       "defaultValue": 10
     },
-    "vmSecurityType": {
+    "sku": {
       "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "TrustedLaunch",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Set to 'TrustedLaunch' only if the CloudLabsSIG image is confirmed Gen2. The image used here has been failing VM creation under TrustedLaunch, most likely because it's a Gen1 image. Defaulting to 'Standard' until confirmed."
-      }
+      "defaultValue": "F2"
+    },
+    "AppId": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "AppSecret": {
+      "type": "securestring",
+      "defaultValue": ""
+    },
+    "azuserobjectid": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -120,10 +125,12 @@
         "hardwareProfile": {
           "vmSize": "[variables('virtualMachineSize')]"
         },
-        "securityProfile": "[if(equals(parameters('vmSecurityType'), 'TrustedLaunch'), createObject('securityType', 'TrustedLaunch', 'uefiSettings', createObject('secureBootEnabled', true(), 'vTpmEnabled', true())), createObject('securityType', 'Standard'))]",
         "storageProfile": {
           "imageReference": {
-            "id": "/subscriptions/8365240a-f0e4-4c52-82b1-be7af985ebbe/resourceGroups/cloudlabs-mgmt/providers/Microsoft.Compute/galleries/CloudLabsSIG/images/GitHub-Copilot-SDLC-Image/versions/1.0.0"
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2025-datacenter-azure-edition",
+            "version": "latest"
           },
           "osDisk": {
             "createOption": "fromImage",
@@ -160,7 +167,7 @@
                 "https://raw.githubusercontent.com/Suyog-spektra/Arm-on-boarding/refs/heads/main/Test/psscript-01.ps1",
                 "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1"
               ],
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File github-copilot-sdlc/scripts/psscript-01.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File psscript-01.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
             }
           }
         }
